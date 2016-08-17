@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>glsl-math.js</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="inline-block">
+      <p>
+        Input data:
+      </p>
+      <canvas id="input_data"></canvas>
+    </div>
+    <div class="inline-block">
+      <p>
+        Output data:
+      </p>
+      <canvas class="result-canvas"></canvas>
+    </div>
+
+    <br>
+    
+    <textarea name='vertex'>
+ // Vertex Shader
+attribute vec3 position;
+varying vec2 UV;
+varying vec3 v_position;
+
+void main(){
+    v_position = position;
+    UV = vec2((position.x+1.0) / 2.0, (position.y + 1.0)/2.0);
+    gl_Position = vec4(v_position.x,v_position.y, 0.0, 1.0);
+}
+    </textarea>
+    
+    <textarea name='fragment'>
+// Fragment shader
+precision highp float;
+
+uniform sampler2D input_tex;
+
+varying vec2 UV;
+varying vec3 v_position;
+
+void main(void){
+    vec4 d = texture2D(input_tex , UV);
+    
+    gl_FragColor =
+        vec4(
+            d.r,
+            d.g,
+            d.b,
+            d.a
+            );
+}
+    </textarea>
+
+    <br>
+
+    <pre class="error-pre">
+    </pre>
+
+    <script src="js/lib/base.js"></script>
+    <script src="js/glsl-math.js"></script>
+  </body>
+</html>

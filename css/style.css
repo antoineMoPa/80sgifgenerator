@@ -1,0 +1,21 @@
+body{
+    padding:0;
+    margin:0;
+}
+
+canvas{
+    border:5px solid #eee;
+}
+
+.inline-block{
+    display:inline-block;
+    vertical-align:top;
+    margin:0;
+}
+
+textarea{
+    min-width:400px;
+    min-height:400px;
+    font-size:15px;
+    resize:both;
+}
