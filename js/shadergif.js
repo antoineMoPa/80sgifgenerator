@@ -15,6 +15,8 @@ var canvas = qsa(".result-canvas")[0];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+var ratio = canvas.width / window.height;
+
 // Canvas for making gifs
 var gif_canvas = qsa(".gif-canvas")[0];
 gif_canvas.width = 500;
