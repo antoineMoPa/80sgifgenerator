@@ -15,13 +15,12 @@ h1,h2,h3{
 }
 
 textarea{
-    min-width:400px;
-    min-height:400px;
+    height:auto;
     font-size:15px;
-    resize:both;
 }
 
 .CodeMirror{
+    height:auto;
     font-size:15px;
 }
 
@@ -29,4 +28,11 @@ textarea{
     padding:10px;
     font-size:15px;
     color:red;
+}
+
+.gif-canvas{
+    display:block;
+    margin:auto;
+    margin-bottom:50px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }

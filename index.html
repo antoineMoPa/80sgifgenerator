@@ -12,10 +12,38 @@
       <canvas class="result-canvas"></canvas>
 
       <br>
+
+      <h3>Fragment Shader</h3>
+      <textarea name='fragment'>
+// Fragment shader
+precision highp float;
+
+varying vec2 UV;
+varying vec3 v_position;
+uniform float time;
+
+void main(void){
+    float x = UV.x;
+    float y = UV.y;
+
+    gl_FragColor =
+        vec4(
+            x,
+            sin(y),
+            sin(10.0 * x * y * time),
+            1.0
+        );
+}</textarea>
+
+      <pre class="fragment-error-pre error-pre">
+      </pre>
+
+      <pre class="vertex-error-pre error-pre">
+      </pre>
       
-      <col-md-6>
-        <h3>Vertex Shader</h3>
-        <textarea name='vertex'>
+      <canvas class="gif-canvas"></canvas>
+      
+      <script name="vertex-shader" type="text/plain">
 // Vertex Shader
 attribute vec3 position;
 varying vec2 UV;
@@ -27,37 +55,7 @@ void main(){
     UV = vec2((position.x+1.0) / 2.0, (position.y + 1.0)/2.0);
     gl_Position = vec4(v_position.x,v_position.y, 0.0, 1.0);
 }
-        </textarea>
-      </col-md-6>
-      <col-md-6>
-        <h3>Fragment Shader</h3>
-        <textarea name='fragment'>
-// Fragment shader
-precision highp float;
-
-varying vec2 UV;
-varying vec3 v_position;
-uniform float time;
-
-void main(void){
-
-gl_FragColor =
-    vec4(
-        UV.x,
-        sin(UV.y),
-        sin(10.0 * UV.y * UV.x * time),
-        1.0
-    );
-}
-        </textarea>
-      </col-md-6>
-      <clearfix>
-
-      <pre class="fragment-error-pre error-pre">
-      </pre>
-
-      <pre class="vertex-error-pre error-pre">
-      </pre>
+      </script>
       
       <script src="js/lib/codemirror/codemirror.js"></script>
       <script src="js/lib/base.js"></script>
