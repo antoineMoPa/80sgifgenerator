@@ -17,8 +17,8 @@ canvas.height = window.innerHeight;
 
 // Canvas for making gifs
 var gif_canvas = qsa(".gif-canvas")[0];
-gif_canvas.width = 200;
-gif_canvas.height = 200;
+gif_canvas.width = 500;
+gif_canvas.height = 500;
 
 var res_ctx = canvas.getContext("webgl");
 var gif_ctx = gif_canvas.getContext("webgl");
