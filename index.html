@@ -3,65 +3,64 @@
   <head>
     <meta charset="utf-8">
     <title>glsl-math.js</title>
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
   </head>
   <body>
-    <div class="inline-block">
-      <p>
-        Input data:
-      </p>
-      <canvas id="input_data"></canvas>
-    </div>
-    <div class="inline-block">
-      <p>
-        Output data:
-      </p>
+    <div class="page-content">
       <canvas class="result-canvas"></canvas>
-    </div>
 
-    <br>
-    
-    <textarea name='vertex'>
- // Vertex Shader
+      <br>
+      
+      <col-md-6>
+        <h3>Vertex Shader</h3>
+        <textarea name='vertex'>
+// Vertex Shader
 attribute vec3 position;
 varying vec2 UV;
 varying vec3 v_position;
+uniform float time;
 
 void main(){
     v_position = position;
     UV = vec2((position.x+1.0) / 2.0, (position.y + 1.0)/2.0);
     gl_Position = vec4(v_position.x,v_position.y, 0.0, 1.0);
 }
-    </textarea>
-    
-    <textarea name='fragment'>
+        </textarea>
+      </col-md-6>
+      <col-md-6>
+        <h3>Fragment Shader</h3>
+        <textarea name='fragment'>
 // Fragment shader
 precision highp float;
 
-uniform sampler2D input_tex;
-
 varying vec2 UV;
 varying vec3 v_position;
+uniform float time;
 
 void main(void){
-    vec4 d = texture2D(input_tex , UV);
-    
-    gl_FragColor =
-        vec4(
-            d.r,
-            d.g,
-            d.b,
-            d.a
-            );
+
+gl_FragColor =
+    vec4(
+        UV.x,
+        sin(UV.y),
+        sin(10.0 * UV.y * UV.x * time),
+        1.0
+    );
 }
-    </textarea>
+        </textarea>
+      </col-md-6>
+      <clearfix>
 
-    <br>
+      <pre class="fragment-error-pre error-pre">
+      </pre>
 
-    <pre class="error-pre">
-    </pre>
-
-    <script src="js/lib/base.js"></script>
-    <script src="js/glsl-math.js"></script>
+      <pre class="vertex-error-pre error-pre">
+      </pre>
+      
+      <script src="js/lib/codemirror/codemirror.js"></script>
+      <script src="js/lib/base.js"></script>
+      <script src="js/glsl-math.js"></script>
   </body>
 </html>

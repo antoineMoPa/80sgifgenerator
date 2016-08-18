@@ -1,11 +1,12 @@
 body{
     padding:0;
     margin:0;
+    font-family:sans-serif;
 }
 
-canvas{
-    border:5px solid #eee;
-}
+h1,h2,h3{
+    margin:20px;
+}    
 
 .inline-block{
     display:inline-block;
@@ -18,4 +19,14 @@ textarea{
     min-height:400px;
     font-size:15px;
     resize:both;
+}
+
+.CodeMirror{
+    font-size:15px;
+}
+
+.error-pre{
+    padding:10px;
+    font-size:15px;
+    color:red;
 }
