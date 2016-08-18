@@ -9,6 +9,9 @@
 
   */
 
+var anim_len = 10;
+var anim_delay = 100;
+var frame = 0;
 
 // The main canvas
 var canvas = qsa(".result-canvas")[0];
@@ -122,9 +125,25 @@ function init_program(ctx){
     
 }
 
-function draw_ctx(can, ctx){
+function draw_ctx(can, ctx, time){
+    // Set time attribute
+    var tot_time = anim_len * anim_delay;
+
+    var time = time ||
+        parseFloat(
+            ((new Date()).getTime() % tot_time)
+                /
+                tot_time
+        );
+    
     var timeAttribute = ctx.getUniformLocation(ctx.program, "time");
-    ctx.uniform1f(timeAttribute, parseFloat((new Date()).getTime() % 10000));
+    ctx.uniform1f(timeAttribute, time);
+    
+    // Screen ratio
+    var ratio = can.width / can.height;
+
+    var ratioAttribute = ctx.getUniformLocation(ctx.program, "ratio");
+    ctx.uniform1f(ratioAttribute, ratio);
     
     ctx.drawArrays(ctx.TRIANGLE_STRIP, 0, 4);
 
@@ -136,15 +155,25 @@ var rendering_gif = false;
 function draw(){
     draw_ctx(canvas, res_ctx);
 
-    // When rendering gif, draw is done elsewhere
-    if(!rendering_gif){
-        draw_ctx(gif_canvas, gif_ctx);
-    }
-    
     window.requestAnimationFrame(draw);
 }
 
 window.requestAnimationFrame(draw);
+
+setInterval(
+    function(){
+        frame++;
+        frame = frame % anim_len;
+        
+        window.requestAnimationFrame(function(){
+            // When rendering gif, draw is done elsewhere
+            if(!rendering_gif){
+                draw_ctx(gif_canvas, gif_ctx, frame/anim_len);
+            }
+        });
+    }
+    ,100
+);
 
 var gif_button = qsa("button[name='make-gif']")[0];
 
@@ -154,13 +183,13 @@ gif_button.addEventListener("click", make_gif);
 function make_gif(){
     var to_export = {};
     
-    to_export.delay = 100;
+    to_export.delay = anim_delay;
     to_export.data = [];
     
     rendering_gif = true;
     
-    for(var i = 0; i < 10; i++){
-        draw_ctx(gif_canvas, gif_ctx);
+    for(var i = 0; i < anim_len; i++){
+        draw_ctx(gif_canvas, gif_ctx, i/anim_len);
         
         to_export.data.push(gif_canvas.toDataURL());
     }
