@@ -21,19 +21,21 @@ precision highp float;
 varying vec2 UV;
 varying vec3 v_position;
 uniform float time;
+uniform float ratio;
 
 void main(void){
-    float x = UV.x;
+    float x = UV.x * ratio;
     float y = UV.y;
-
+    
     gl_FragColor =
         vec4(
-            x,
+            sqrt(pow(x,2.0) + pow(y,2.0)) < 1.0,
             sin(y),
-            sin(10.0 * x * y * time),
+            sin(100.0 * x * y * time),
             1.0
         );
-}</textarea>
+}
+</textarea>
 
         <pre class="fragment-error-pre error-pre">
         </pre>
