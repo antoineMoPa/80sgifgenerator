@@ -17,8 +17,8 @@ canvas.height = window.innerHeight;
 
 // Canvas for making gifs
 var gif_canvas = qsa(".gif-canvas")[0];
-gif_canvas.width = 500;
-gif_canvas.height = 500;
+gif_canvas.width = 200;
+gif_canvas.height = 200;
 
 var res_ctx = canvas.getContext("webgl");
 var gif_ctx = gif_canvas.getContext("webgl");
@@ -129,11 +129,82 @@ function draw_ctx(can, ctx){
     ctx.viewport(0, 0, can.width, can.height);
 }
 
+var rendering_gif = false;
+
 function draw(){
     draw_ctx(canvas, res_ctx);
-    draw_ctx(gif_canvas, gif_ctx);
+
+    // When rendering gif, draw is done elsewhere
+    if(!rendering_gif){
+        draw_ctx(gif_canvas, gif_ctx);
+    }
     
     window.requestAnimationFrame(draw);
 }
 
 window.requestAnimationFrame(draw);
+
+var gif_button = qsa("button[name='make-gif']")[0];
+
+gif_button.addEventListener("click", make_gif);
+
+// Render all the frames
+function make_gif(){
+    var to_export = {};
+    
+    to_export.delay = 100;
+    to_export.data = [];
+    
+    rendering_gif = true;
+    
+    for(var i = 0; i < 10; i++){
+        draw_ctx(gif_canvas, gif_ctx);
+        
+        to_export.data.push(gif_canvas.toDataURL());
+    }
+
+    rendering_gif = false;
+    
+    export_gif(to_export);
+}
+
+// Make the gif from the frames
+function export_gif(to_export){
+    var gif = new GIF({
+        workers: 2,
+        quality: 10,
+        workerScript: "gif-export/lib/gifjs/gif.worker.js"
+    });
+    
+    data = to_export.data;
+    
+    var images = [];
+    
+    for(var i = 0; i < data.length; i++){
+        var image = new Image();
+        image.src = data[i];
+        image.onload = imageLoaded;
+        images.push(image);
+    }
+    
+    var number_loaded = 0;
+    function imageLoaded(){
+        number_loaded++;
+        if(number_loaded == data.length){
+            convert();
+        }
+    }
+    
+    function convert(){
+        for(var i = 0; i < images.length; i++){    
+            gif.addFrame(images[i],{delay: to_export.delay});
+        }
+        
+        gif.render();
+        
+        gif.on('finished',function(blob){
+            var img = new_qsa(".result-img")[0];
+            img.src = URL.createObjectURL(blob);
+        })
+    }
+}
