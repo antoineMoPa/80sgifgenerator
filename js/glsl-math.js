@@ -203,8 +203,9 @@ function export_gif(to_export){
         gif.render();
         
         gif.on('finished',function(blob){
-            var img = new_qsa(".result-img")[0];
+            var img = dom("<img>");
             img.src = URL.createObjectURL(blob);
+            document.body.appendChild(img);
         })
     }
 }
