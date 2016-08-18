@@ -36,3 +36,21 @@ textarea{
     margin-bottom:50px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
+
+button{
+    display:block;
+    margin:auto;
+    border:none;
+    background:#3af;
+    color:#fff;
+    padding:20px;
+    font-size:16px;
+    margin-bottom:50px;
+}
+
+.result-images img{
+    display: block;
+    margin: auto !important;
+    margin-top:20px;
+    margin-bottom:20px;
+}

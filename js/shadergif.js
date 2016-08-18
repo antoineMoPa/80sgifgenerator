@@ -201,11 +201,16 @@ function export_gif(to_export){
         }
         
         gif.render();
+
+        var images_div = qsa(".result-images")[0];
         
         gif.on('finished',function(blob){
+            // Create image
             var img = dom("<img>");
             img.src = URL.createObjectURL(blob);
-            document.body.appendChild(img);
+
+            // Add it to the body
+            images_div.insertBefore(img, images_div.firstChild)
         })
     }
 }
