@@ -44,7 +44,7 @@ void main(void){
         </pre>
         
       </col-md-6>
-      <col-md-6>
+      <col-md-6 class="sticky-column">
         
         <div class="text-center">
           <h3>Gif preview</h3>
@@ -55,7 +55,12 @@ void main(void){
         <button name="make-gif">
           Make a gif from this
         </button>
-        
+                
+      </col-md-6>
+      
+      <clearfix></clearfix>
+      
+      <col-md-6>
         <div class="text-center">
           <h3>Gifs will appear here (below)</h3>
           <p>
@@ -67,11 +72,7 @@ void main(void){
         <div class="result-images">
           <span></span>
         </div>
-        
       </col-md-6>
-
-      <clearfix></clearfix>
-      
       <script name="vertex-shader" type="text/plain">
 // Vertex Shader
 attribute vec3 position;

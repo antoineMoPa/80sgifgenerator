@@ -60,7 +60,6 @@ var fragment_code = qsa("textarea[name='fragment']")[0];
 
 var f_editor = CodeMirror.fromTextArea(fragment_code, {
     lineNumbers: true,
-    viewportMargin: Infinity
 });
 
 f_editor.on("change", update_shader);

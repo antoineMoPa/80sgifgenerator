@@ -56,3 +56,9 @@ button{
     margin-top:20px;
     margin-bottom:20px;
 }
+
+.sticky-column{
+    position:sticky;
+    top:0;
+    right:0;
+}
