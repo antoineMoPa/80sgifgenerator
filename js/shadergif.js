@@ -163,16 +163,16 @@ window.requestAnimationFrame(draw);
 setInterval(
     function(){
         frame++;
-        frame = frame % anim_len;
+        frame = frame % (anim_len);
         
         window.requestAnimationFrame(function(){
             // When rendering gif, draw is done elsewhere
             if(!rendering_gif){
-                draw_ctx(gif_canvas, gif_ctx, frame/anim_len);
+                draw_ctx(gif_canvas, gif_ctx, (frame + 1)/(anim_len));
             }
         });
     }
-    ,100
+    , anim_delay
 );
 
 var gif_button = qsa("button[name='make-gif']")[0];
@@ -189,7 +189,7 @@ function make_gif(){
     rendering_gif = true;
     
     for(var i = 0; i < anim_len; i++){
-        draw_ctx(gif_canvas, gif_ctx, i/anim_len);
+        draw_ctx(gif_canvas, gif_ctx, (i + 1)/anim_len);
         
         to_export.data.push(gif_canvas.toDataURL());
     }
