@@ -18,6 +18,17 @@ var canvas = qsa(".result-canvas")[0];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+var matches =
+    window.location.href.match(
+            /\?file\=([a-zA-Z0-9]+\.glsl)/
+    );
+
+var filename = "";
+
+if(matches != null){
+    filename = matches[1] || "";
+}
+
 var ratio = canvas.width / window.height;
 
 // Canvas for making gifs
@@ -61,6 +72,23 @@ var fragment_code = qsa("textarea[name='fragment']")[0];
 var f_editor = CodeMirror.fromTextArea(fragment_code, {
     lineNumbers: true,
 });
+
+// Fetch file and put it in textarea
+if(filename != ""){
+    try{
+        var xhr = new XMLHttpRequest;
+        xhr.open('GET', "./" + filename, true);
+        xhr.onreadystatechange = function(){
+            if (4 == xhr.readyState) {
+                var val = xhr.responseText;
+                f_editor.setValue(val);
+            }
+        };
+        xhr.send();
+    } catch (e){
+        // Do nothing
+    }
+}
 
 f_editor.on("change", update_shader);
 
