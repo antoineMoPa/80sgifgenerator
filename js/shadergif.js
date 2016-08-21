@@ -12,6 +12,7 @@
 var anim_len = 10;
 var anim_delay = 100;
 var frame = 0;
+var mouse = [0.0, 0.0];
 
 // The main canvas
 var canvas = qsa(".result-canvas")[0];
@@ -41,6 +42,28 @@ var gif_ctx = gif_canvas.getContext("webgl");
 
 var fragment_error_pre = qsa(".fragment-error-pre")[0];
 var vertex_error_pre = qsa(".vertex-error-pre")[0];
+
+enable_mouse(canvas);
+enable_mouse(gif_canvas);
+
+function enable_mouse(can){
+    var hover = false;
+
+    mouse = [can.width / 2.0, can.height / 2.0];
+    
+    can.addEventListener("mousemove", function(e){
+        var x,y;
+
+        x = e.clientX - can.offsetLeft - can.offsetParent.offsetLeft;
+        y = e.clientY - can.offsetTop;
+        
+        mouse = [x, y];
+    });
+    
+    can.addEventListener("mouseleave", function(){
+        mouse = [can.width / 2.0, can.height / 2.0];
+    });
+}
 
 init_ctx(res_ctx);
 init_ctx(gif_ctx);
@@ -171,6 +194,13 @@ function draw_ctx(can, ctx, time){
 
     var ratioAttribute = ctx.getUniformLocation(ctx.program, "ratio");
     ctx.uniform1f(ratioAttribute, ratio);
+
+    // Mouse
+    var mouseAttribute = ctx.getUniformLocation(ctx.program, "mouse");
+    var x = mouse[0] / can.width * ratio;
+    var y = - mouse[1] / can.height;
+    
+    ctx.uniform2fv(mouseAttribute, [x, y]);
     
     ctx.drawArrays(ctx.TRIANGLE_STRIP, 0, 4);
 
