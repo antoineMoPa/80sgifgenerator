@@ -22,7 +22,7 @@ canvas.height = window.innerHeight;
 
 var matches =
     window.location.href.match(
-            /\?file\=([a-zA-Z0-9]+\.glsl)/
+            /\?file\=([a-zA-Z0-9\/]+\.glsl)/
     );
 
 var filename = "";
