@@ -63,8 +63,14 @@ function enable_mouse(can){
     function setMouse(e){
         var x, y;
         
-        x = e.clientX - can.offsetLeft - can.offsetParent.offsetLeft;
-        y = e.clientY - can.offsetTop;
+        x = e.clientX
+            - can.offsetLeft
+            - can.offsetParent.offsetLeft
+            + window.scrollX;
+        y = e.clientY
+            - can.offsetTop
+            - can.offsetParent.offsetTop
+            + window.scrollY;
         
         mouse = [x, y];
     }

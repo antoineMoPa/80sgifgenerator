@@ -30,7 +30,7 @@ void main(void){
     
     vec4 col = vec4(0.0);
     
-    x *= distance(mouse, vec2(x, y - 0.88));
+    x *= distance(mouse, vec2(x, y - 1.0));
     y *= distance(mouse, vec2(x, y));
     
     col.r = abs(sin(30.0 * y + 3.1416 * time + 0.3));
