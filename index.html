@@ -22,20 +22,25 @@ varying vec2 UV;
 varying vec3 v_position;
 uniform float time;
 uniform float ratio;
+uniform vec2 mouse;
 
 void main(void){
     float x = UV.x * ratio;
     float y = UV.y;
     
-    gl_FragColor =
-        vec4(
-            sqrt(pow(x,2.0) + pow(y,2.0)) < 1.0,
-            sin(y),
-            sin(100.0 * x * y * time),
-            1.0
-        );
-}
-</textarea>
+    vec4 col = vec4(0.0);
+    
+    x *= distance(mouse, vec2(x, y - 0.88));
+    y *= distance(mouse, vec2(x, y));
+    
+    col.r = abs(sin(30.0 * y + 3.1416 * time + 0.3));
+    col.b = abs(sin(30.0 * y + 3.1416 * time + 0.5));
+    col.b = abs(sin(30.0 * y + 3.1416 * time + 1.0));
+    col *= cos(30.0 * x);
+    col.a = 1.0;
+    
+    gl_FragColor = col;
+}</textarea>
 
         <pre class="fragment-error-pre error-pre">
         </pre>
