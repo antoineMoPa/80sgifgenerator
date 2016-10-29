@@ -9,16 +9,14 @@
   </head>
   <body>
     <div class="page-content">
+      <h1 class="text-center">Animated 80's gif generator</h1>
       <br>
-      <col-md-6 class="sticky-column">
+      <col-md-6>
         <div class="text-center">
           <h3>Gif preview</h3>
         </div>
         <canvas class="text-canvas hidden"></canvas>
         <canvas class="gif-canvas"></canvas>
-        <button name="make-gif">
-          Make a gif from this
-        </button>
       </col-md-6>
       <col-md-6 class="settings">
         <div class="text-center">
@@ -62,10 +60,12 @@
       
       <col-md-6>
         <div class="text-center">
-          <h3>Gifs will appear here (below)</h3>
+          <button name="make-gif">
+            Make a gif from this
+          </button>
+          <h3>Gifs will appear below</h3>
           <p>
             (be patient)<br>
-            Due to gif compression, results may look weird to your eyes (or fancier?).
           </p>
         </div>
         
@@ -73,6 +73,34 @@
           <span></span>
         </div>
       </col-md-6>
+
+      <clearfix></clearfix>
+      
+      <footer>
+        <a href="https://github.com/antoineMoPa/80sgifgenerator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>  
+        <p class="text-center">
+        By <a target="_blank" href="https://twitter.com/AntoineMoPa">@antoineMoPa</a><br>
+        </p>
+
+        <p class="text-center text-bold">
+          Credits:<br>
+        </p>
+        <p class="text-center">
+          The epic image generator that inspired this:<br>
+          <a target="_blank" href="https://m.photofunia.com/effects/retro-wave">
+            Retro-Wave at PhotoFunia
+          </a>
+        </p>
+        <p class="text-center">
+          Some fonts at Google webfont:<br>
+          Contrail One, Kaushan Script & Monoton
+        </p>
+        <p class="text-center">
+          This awesome js gif conversion library:<br>
+          <a target="_blank" href="https://github.com/jnordberg/gif.js">gif.js</a>
+        </p>
+      </footer>
+      
       <script name="vertex-shader" type="text/plain">
 // Vertex Shader
 attribute vec3 position;

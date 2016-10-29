@@ -90,7 +90,7 @@ col-md-12 {
     float:left;
     vertical-align:top
 }
-.clearfix,clearfix {
+.clearfix, clearfix{
     display:block;
     clear:both
 }
