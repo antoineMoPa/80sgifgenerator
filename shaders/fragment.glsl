@@ -147,17 +147,97 @@ vec4 triangles(vec2 pos, float t){
 }
 
 
+vec4 style_rainbow(vec2 pos, float t){
+    vec4 col = vec4(0.0);
+
+    col.rgb += vec3(0.8,0.8,0.8);
+    
+    float redfac =
+        pow(
+            cos(0.2 * cos(PI2 * t) + 30.0 * (pos.x - 0.2 * pos.y)),
+            2.0
+            );
+    
+    col.r += 0.5 * redfac;
+    col.gb -= 0.4 * vec2(redfac);
+    
+    float bluefac =
+        pow(
+            cos(0.3 * cos(PI2 * t) + 18.0 * (pos.x - 0.2 * pos.y)),
+            2.0
+            );
+    
+    col.b += 0.3 * bluefac;
+    col.rg -=  0.2 * vec2(bluefac);
+    
+    float greenfac =
+        pow(
+            cos(0.3 * cos(PI2 * t) + 22.0 * (pos.x - 0.2 * pos.y)),
+            2.0
+            );
+    
+    col.g += 0.1 * greenfac;
+    col.rb -=  0.1 * vec2(greenfac);
+    
+    return col;
+}
+
+vec4 style_mirror(vec2 pos, float height, float t){
+    vec4 col = vec4(0.0);
+    
+    col.rgb += vec3(0.8,0.8,0.8);
+    
+    if(pos.y < height + 0.004 * cos(PI2 * time + 30.0 * pos.x)){
+        col *= 1.0 + 0.2 * cos(PI2 * time + 30.0 * pos.x);
+    } else {
+        col *= 1.0 - 0.2 * cos(PI2 * time + 30.0 * pos.x);
+    }
+    
+    return col;
+}
+
+vec4 text(vec2 pos, float t){
+    vec4 col = vec4(0.0);
+    
+    vec4 tdata = texture2D(text_tex, pos);
+
+    // top
+    if(tdata.r > 0.0001){
+        col.rgb += vec3(0.9,0.3,0.5);
+
+        col *= 1.0 + 0.2 * cos(PI2 * time + 30.0 * pos.x);
+    }
+    
+    // middle
+    if(tdata.g > 0.0001){
+        col += style_mirror(pos, 0.65, t);
+    }
+    
+    // bottom
+    if(tdata.b > 0.0001){
+        col += style_rainbow(pos, t);
+    }
+
+    
+    return col;
+}
+
+
 void main(void){
     float x = UV.x * ratio;
     float y = UV.y;
-    
-    vec4 col = vec4(0.0);
+
+    // Background
+    vec4 col = vec4(0.02);
     
     col += stars(vec2(x,y), time);
     col += 0.9 * grid_with_angle(vec2(x,y), time);
-    col += triangles(vec2(x,y),time);
 
-    col += texture2D(text_tex, vec2(x, y));
+    // Vignette
+    col *= pow(1.0 - distance(vec2(x, y), vec2(0.5, 0.5)),2.0);
+
+    col += 1.8 * triangles(vec2(x,y),time);
+    col += text(vec2(x, y), time);
     
     col.a = 1.0;
     

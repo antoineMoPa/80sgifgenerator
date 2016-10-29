@@ -124,14 +124,14 @@ function render_text(){
 
     ctx.clearRect(0,0,size,size);
     
-    ctx.fillStyle = "#fff";
-
     ctx.textAlign = "center";
 
     // TOP TEXT
     // Set font size & style
     var tsize = data.text_top_size;
-    
+
+    ctx.fillStyle = "#ff0000";
+
     ctx.font = tsize +
         "px Kaushan Script";
 
@@ -143,6 +143,7 @@ function render_text(){
     ctx.restore();
 
     // MIDDLE TEXT
+    ctx.fillStyle = "#00ff00";
     var tsize = data.text_middle_size;
 
     ctx.font = tsize +
@@ -151,6 +152,7 @@ function render_text(){
     ctx.fillText(data.text_middle,250,size*1/3 + tsize/2);
 
     // BOTTOM TEXT
+    ctx.fillStyle = "#0000ff";
     var tsize = data.text_bottom_size;
     ctx.font = tsize +
         "px Contrail One";
