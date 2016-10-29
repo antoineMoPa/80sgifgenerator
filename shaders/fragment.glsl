@@ -6,6 +6,7 @@ varying vec3 v_position;
 uniform float time;
 uniform float ratio;
 uniform vec2 mouse;
+uniform sampler2D text_tex;
 
 #define PI 3.1416
 #define PI2 (3.1416 * 2.0)
@@ -139,6 +140,8 @@ void main(void){
     col += stars(vec2(x,y), time);
     col += grid_with_angle(vec2(x,y), time);
     col += triangles(vec2(x,y),time);
+
+    col += texture2D(text_tex, vec2(x, y));
     
     col.a = 1.0;
     

@@ -13,28 +13,54 @@ var anim_len = 10;
 var anim_delay = 100;
 var frame = 0;
 
-// The main canvas
-var canvas = qsa(".result-canvas")[0];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+var text_canvas = qsa(".text-canvas")[0];
+var text_ctx = text_canvas.getContext("2d");
 
 var filename = "shaders/fragment.glsl";
 
-var ratio = canvas.width / window.height;
+var ratio = 1;
+
+var size = 512;
 
 // Canvas for making gifs
 var gif_canvas = qsa(".gif-canvas")[0];
-gif_canvas.width = 500;
-gif_canvas.height = 500;
+gif_canvas.width = size;
+gif_canvas.height = size;
 
-var res_ctx = canvas.getContext("webgl");
+text_canvas.width = size;
+text_canvas.height = size;
+
 var gif_ctx = gif_canvas.getContext("webgl");
 
 var fragment_error_pre = qsa(".fragment-error-pre")[0];
 var vertex_error_pre = qsa(".vertex-error-pre")[0];
 
-init_ctx(res_ctx);
+// Text texture
+var text_tex;
+
 init_ctx(gif_ctx);
+init_text_texture(text_canvas, gif_ctx);
+                                        
+function init_text_texture(text_canvas, gif_ctx){
+    var gl = gif_ctx;
+    
+    // http://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
+    text_tex = gl.createTexture();
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 
+
+    load_text_texture(text_canvas, gl);
+    
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+function load_text_texture(can, gl){
+    gl.bindTexture(gl.TEXTURE_2D, text_tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, can);
+}
 
 function init_ctx(ctx){
     ctx.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -58,6 +84,60 @@ function init_ctx(ctx){
 var vertex_code = load_script("vertex-shader");
 var fragment_code = "";
 
+var text_top, text_middle, text_bottom;
+var text_top_i, text_middle_i, text_bottom_i;
+
+text_top_i = qsa("input[name=top-text]")[0];
+text_middle_i = qsa("input[name=middle-text]")[0];
+text_bottom_i = qsa("input[name=bottom-text]")[0];
+
+init_updater(text_top_i);
+init_updater(text_middle_i);
+init_updater(text_bottom_i);
+
+update_text();
+
+function init_updater(input){
+    input.addEventListener("change",update_text);
+    input.addEventListener("keydown",update_text);
+    input.addEventListener("keyup",update_text);
+}
+
+function update_text(){
+    text_top = text_top_i.value;
+    text_middle = text_middle_i.value;
+    text_bottom = text_bottom_i.value;
+
+    render_text();
+}
+
+function render_text(){
+    var ctx = text_ctx;
+
+    ctx.clearRect(0,0,size,size);
+    
+    ctx.fillStyle = "#fff";
+
+    ctx.textAlign = "center";
+
+
+    ctx.font = "30px Fira";
+
+    ctx.save();
+    ctx.translate(250, 120);
+    ctx.rotate(-0.1);
+    ctx.fillText(text_top, 0, 0);
+    ctx.restore();
+
+    ctx.font = "50px Fira";
+    ctx.fillText(text_middle,250,250);
+
+    ctx.font = "30px Fira";
+    ctx.fillText(text_bottom,250,380);
+
+    load_text_texture(text_canvas, gif_ctx);
+}
+
 // Fetch file and put it in textarea
 if(filename != ""){
     try{
@@ -77,7 +157,6 @@ if(filename != ""){
 }
 
 function update_shader(){
-    init_program(res_ctx);
     init_program(gif_ctx);
 }
 
@@ -154,21 +233,21 @@ function draw_ctx(can, ctx, time){
     var ratioAttribute = ctx.getUniformLocation(ctx.program, "ratio");
     ctx.uniform1f(ratioAttribute, ratio);
 
+
+    var texUniformAttribute =
+        ctx.getUniformLocation(ctx.program, "TEXTURE0");
+    
+    ctx.activeTexture(ctx.TEXTURE0);
+    ctx.bindTexture(ctx.TEXTURE_2D, text_tex);
+    ctx.uniform1i(texUniformAttribute, 0);
     
     ctx.drawArrays(ctx.TRIANGLE_STRIP, 0, 4);
 
     ctx.viewport(0, 0, can.width, can.height);
+
 }
 
 var rendering_gif = false;
-
-function draw(){
-    draw_ctx(canvas, res_ctx);
-
-    window.requestAnimationFrame(draw);
-}
-
-window.requestAnimationFrame(draw);
 
 setInterval(
     function(){
