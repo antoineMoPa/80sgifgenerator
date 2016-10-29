@@ -62,3 +62,21 @@ button{
     top:0;
     right:0;
 }
+
+label{
+    font-weight:600;
+    line-height:28px;
+} 
+
+fieldset{
+    margin:10px;
+    margin:auto;
+    width:100%;
+    width:calc(100% - 60px);
+    border-radius:2px;
+    background:#efefef;
+}
+
+.settings input{
+    font-size:30px;
+}
