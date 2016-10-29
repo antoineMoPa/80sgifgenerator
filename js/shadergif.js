@@ -12,24 +12,13 @@
 var anim_len = 10;
 var anim_delay = 100;
 var frame = 0;
-var mouse = [0.0, 0.0];
-var smooth_mouse = [0.0, 0.0];
 
 // The main canvas
 var canvas = qsa(".result-canvas")[0];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-var matches =
-    window.location.href.match(
-            /\?file\=([a-zA-Z0-9\/]+\.glsl)/
-    );
-
-var filename = "";
-
-if(matches != null){
-    filename = matches[1] || "";
-}
+var filename = "shaders/fragment.glsl";
 
 var ratio = canvas.width / window.height;
 
@@ -43,43 +32,6 @@ var gif_ctx = gif_canvas.getContext("webgl");
 
 var fragment_error_pre = qsa(".fragment-error-pre")[0];
 var vertex_error_pre = qsa(".vertex-error-pre")[0];
-
-enable_mouse(canvas);
-enable_mouse(gif_canvas);
-
-function enable_mouse(can){
-    can.hover = false;
-    
-    mouse = [can.width / 2.0, can.height / 2.0];
-    smooth_mouse = [0.5, 0.5];
-
-    can.addEventListener("mouseenter", function(e){
-        can.hover = true;
-        mouse = [can.width / 2.0, can.height / 2.0];
-    });
-    
-    can.addEventListener("mousemove", setMouse);
-    
-    function setMouse(e){
-        var x, y;
-        
-        x = e.clientX
-            - can.offsetLeft
-            - can.offsetParent.offsetLeft
-            + window.scrollX;
-        y = e.clientY
-            - can.offsetTop
-            - can.offsetParent.offsetTop
-            + window.scrollY;
-        
-        mouse = [x, y];
-    }
-    
-    can.addEventListener("mouseleave", function(){
-        can.hover = false;
-        mouse = [can.width / 2.0, can.height / 2.0];
-    });
-}
 
 init_ctx(res_ctx);
 init_ctx(gif_ctx);
@@ -104,13 +56,7 @@ function init_ctx(ctx){
 }
 
 var vertex_code = load_script("vertex-shader");
-var fragment_code = qsa("textarea[name='fragment']")[0];
-
-// Enable codemirror
-
-var f_editor = CodeMirror.fromTextArea(fragment_code, {
-    lineNumbers: true,
-});
+var fragment_code = "";
 
 // Fetch file and put it in textarea
 if(filename != ""){
@@ -120,7 +66,8 @@ if(filename != ""){
         xhr.onreadystatechange = function(){
             if (4 == xhr.readyState) {
                 var val = xhr.responseText;
-                f_editor.setValue(val);
+                fragment_code = val;
+                update_shader();
             }
         };
         xhr.send();
@@ -128,10 +75,6 @@ if(filename != ""){
         // Do nothing
     }
 }
-
-f_editor.on("change", update_shader);
-
-update_shader();
 
 function update_shader(){
     init_program(res_ctx);
@@ -145,7 +88,7 @@ function init_program(ctx){
         add_shader(ctx.VERTEX_SHADER, vertex_code);
     
     var fragment_shader =
-        add_shader(ctx.FRAGMENT_SHADER, f_editor.getValue());
+        add_shader(ctx.FRAGMENT_SHADER, fragment_code);
     
     function add_shader(type,content){
         var shader = ctx.createShader(type);
@@ -211,28 +154,10 @@ function draw_ctx(can, ctx, time){
     var ratioAttribute = ctx.getUniformLocation(ctx.program, "ratio");
     ctx.uniform1f(ratioAttribute, ratio);
 
-    // Mouse
-    var x = mouse[0] / can.width * ratio;
-    var y = - mouse[1] / can.height;
-    var mouseAttribute = ctx.getUniformLocation(ctx.program, "mouse");
-    ctx.uniform2fv(mouseAttribute, [x, y]);
-
-    // Smooth mouse
-    if(can.hover == true){
-        smooth_mouse[0] = 0.9 * smooth_mouse[0] + 0.1 * x;
-        smooth_mouse[1] = 0.9 * smooth_mouse[1] + 0.1 * y;
-    }
-
-    var smAttribute = ctx.getUniformLocation(
-        ctx.program, "smooth_mouse"
-    );
-    
-    ctx.uniform2fv(smAttribute, smooth_mouse);
     
     ctx.drawArrays(ctx.TRIANGLE_STRIP, 0, 4);
 
     ctx.viewport(0, 0, can.width, can.height);
-
 }
 
 var rendering_gif = false;

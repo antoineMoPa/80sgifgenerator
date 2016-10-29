@@ -2,45 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>ShaderGif</title>
+    <title>80's gif generator</title>
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <div class="page-content">
       <canvas class="result-canvas"></canvas>
-
       <br>
       <col-md-6>
-        <h3>Fragment Shader</h3>
-        <textarea name='fragment'>
-// Fragment shader
-precision highp float;
-
-varying vec2 UV;
-varying vec3 v_position;
-uniform float time;
-uniform float ratio;
-uniform vec2 mouse;
-
-void main(void){
-    float x = UV.x * ratio;
-    float y = UV.y;
-    
-    vec4 col = vec4(0.0);
-    
-    x *= distance(mouse, vec2(x, y - 1.0));
-    y *= distance(mouse, vec2(x, y));
-    
-    col.r = abs(sin(30.0 * y + 3.1416 * time + 0.3));
-    col.b = abs(sin(30.0 * y + 3.1416 * time + 0.5));
-    col.b = abs(sin(30.0 * y + 3.1416 * time + 1.0));
-    col *= cos(30.0 * x);
-    col.a = 1.0;
-    
-    gl_FragColor = col;
-}</textarea>
 
         <pre class="fragment-error-pre error-pre">
         </pre>
@@ -50,17 +20,13 @@ void main(void){
         
       </col-md-6>
       <col-md-6 class="sticky-column">
-        
         <div class="text-center">
           <h3>Gif preview</h3>
         </div>
-        
         <canvas class="gif-canvas"></canvas>
-
         <button name="make-gif">
           Make a gif from this
         </button>
-                
       </col-md-6>
       
       <clearfix></clearfix>
@@ -69,8 +35,8 @@ void main(void){
         <div class="text-center">
           <h3>Gifs will appear here (below)</h3>
           <p>
-            (be patient and open console to see messages)<br>
-            Due to compression by gif.js, result may appear weird to you (or fancier?).
+            (be patient)<br>
+            Due to gif compression, results may look weird to your eyes (or fancier?).
           </p>
         </div>
         
@@ -92,7 +58,6 @@ void main(){
 }
       </script>
       
-      <script src="js/lib/codemirror/codemirror.js"></script>
       <script src="js/lib/base.js"></script>
       <script src="gif-export/lib/gifjs/gif.js"></script>
       <script src="js/shadergif.js"></script>
