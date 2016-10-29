@@ -71,7 +71,8 @@ vec4 grid_with_angle(vec2 pos, float t){
 
 vec4 stars(vec2 pos, float t){
     vec4 col = vec4(0.0);
-    
+
+    // Here I just typed pseudo randomly until I reached a nice result
     float fac = sin(-2.0 * (cos(143.0 * pos.x) + sin(20.0 * pos.y)));
     fac *= sin(-2.0 * (cos(43.4 * pos.x) + sin(132.0 * pos.y)));
     fac *= sin(-2.0 * (tan(23.4 * pos.x) + sin(12.0 * pos.y)));
@@ -230,7 +231,7 @@ void main(void){
     // Background
     vec4 col = vec4(0.02);
     
-    col += stars(vec2(x,y), time);
+    col += 1.5 * stars(vec2(x,y), time);
     col += 0.9 * grid_with_angle(vec2(x,y), time);
 
     // Vignette
