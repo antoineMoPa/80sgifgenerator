@@ -77,6 +77,6 @@ fieldset{
     background:#efefef;
 }
 
-.settings input{
+.settings input[type=text]{
     font-size:30px;
 }

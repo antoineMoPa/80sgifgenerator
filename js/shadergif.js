@@ -6,7 +6,8 @@
   * https://www.opengl.org/wiki/Data_Type_%28GLSL%29#Vector_constructors
   * https://www.opengl.org/wiki/Built-in_Variable_%28GLSL%29
   * https://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf
-
+  * http://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
+  
   */
 
 var anim_len = 10;
@@ -44,7 +45,6 @@ init_text_texture(text_canvas, gif_ctx);
 function init_text_texture(text_canvas, gif_ctx){
     var gl = gif_ctx;
     
-    // http://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
     text_tex = gl.createTexture();
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 
 
@@ -84,30 +84,38 @@ function init_ctx(ctx){
 var vertex_code = load_script("vertex-shader");
 var fragment_code = "";
 
-var text_top, text_middle, text_bottom;
-var text_top_i, text_middle_i, text_bottom_i;
+init_updater(qsa(".settings input"));
 
-text_top_i = qsa("input[name=top-text]")[0];
-text_middle_i = qsa("input[name=middle-text]")[0];
-text_bottom_i = qsa("input[name=bottom-text]")[0];
+var data = {
+    text_top : "",
+    text_top_size : 0,
+    text_middle : "",
+    text_middle_size : 0,
+    text_bottom : "",
+    text_bottom_size : 0
+};
 
-init_updater(text_top_i);
-init_updater(text_middle_i);
-init_updater(text_bottom_i);
-
+window.addEventListener("load", update_text);
 update_text();
 
-function init_updater(input){
-    input.addEventListener("change",update_text);
-    input.addEventListener("keydown",update_text);
-    input.addEventListener("keyup",update_text);
+function init_updater(inputs){
+    // Add some event listeners
+    for(var i = 0; i < inputs.length; i++){
+        input = inputs[i];
+        input.addEventListener("change",update_text);
+        input.addEventListener("keydown",update_text);
+        input.addEventListener("keyup",update_text);
+    }
 }
 
 function update_text(){
-    text_top = text_top_i.value;
-    text_middle = text_middle_i.value;
-    text_bottom = text_bottom_i.value;
-
+    // Fetch values in inputs
+    data.text_top = qsa("input[name=top-text]")[0].value;
+    data.text_top_size = qsa("input[name=top-text-size]")[0].value;
+    data.text_middle = qsa("input[name=middle-text]")[0].value.toUpperCase();
+    data.text_middle_size = qsa("input[name=middle-text-size]")[0].value;
+    data.text_bottom = qsa("input[name=bottom-text]")[0].value.toUpperCase();
+    data.text_bottom_size = qsa("input[name=bottom-text-size]")[0].value;
     render_text();
 }
 
@@ -120,21 +128,36 @@ function render_text(){
 
     ctx.textAlign = "center";
 
+    // TOP TEXT
+    // Set font size & style
+    var tsize = data.text_top_size;
+    
+    ctx.font = tsize +
+        "px Kaushan Script";
 
-    ctx.font = "30px Fira";
-
+    // Translate, rotate and render
     ctx.save();
-    ctx.translate(250, 120);
+    ctx.translate(250, size*1/6 + tsize/2);
     ctx.rotate(-0.1);
-    ctx.fillText(text_top, 0, 0);
+    ctx.fillText(data.text_top, 0, 0);
     ctx.restore();
 
-    ctx.font = "50px Fira";
-    ctx.fillText(text_middle,250,250);
+    // MIDDLE TEXT
+    var tsize = data.text_middle_size;
 
-    ctx.font = "30px Fira";
-    ctx.fillText(text_bottom,250,380);
+    ctx.font = tsize +
+        "px Monoton";
+    
+    ctx.fillText(data.text_middle,250,size*1/3 + tsize/2);
 
+    // BOTTOM TEXT
+    var tsize = data.text_bottom_size;
+    ctx.font = tsize +
+        "px Contrail One";
+
+    ctx.fillText(data.text_bottom,250,size*1/2 + tsize/2);
+
+    // Put it in the opengl texture
     load_text_texture(text_canvas, gif_ctx);
 }
 

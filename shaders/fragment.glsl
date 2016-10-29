@@ -14,10 +14,12 @@ uniform sampler2D text_tex;
 
 vec4 lines(vec2 pos){
     vec4 col = vec4(0.0);
+
+    float size = 80.0;
     
-    if(cos(50.0 * pos.x) > 0.95){
+    if(cos(size * pos.x) > 0.95){
         col = grid_col;
-        col.rgb *= cos(200.0 * pos.x);
+        col.rgb *= cos(size * 4.0 * pos.x);
     }
     
     return col;
@@ -34,6 +36,8 @@ vec4 grid(vec2 pos){
 
 vec4 grid_with_angle(vec2 pos, float t){
     vec4 col = vec4(0.0);
+
+    float line_y = 0.33;
     
     float intensity = 0.8 + 0.2 * cos(PI2 * time) * cos(20.0 * pos.y);
     
@@ -41,21 +45,23 @@ vec4 grid_with_angle(vec2 pos, float t){
         return col;
     }
     
-    if(pos.y > 0.35 ){
-        float fac = 1.0 - pow((pos.y - 0.385)/0.025, 2.0);
-        
-        fac *= intensity;
+    // The line at the middle of the screen
+    if(pos.y > line_y - 0.05){
+        float fac = 1.0 - pow((pos.y - line_y + 0.005)/0.025, 2.0);
+
+        fac *= 0.8;
         
         if(fac > 0.0){
             fac = 0.5 * fac + 6.0 * pow(fac, 8.0);
-            col = grid_col * fac;
+            col = 0.8 * grid_col * fac;
         }
     }
-    
-    if(pos.y < 0.38){
+
+    // The grid
+    if(pos.y < line_y){
         pos.x -= 0.5;
         pos.x *= pos.y + 0.5;
-        pos.y += t/8.0;
+        pos.y += t/16.0;
         
         col += grid(pos) * intensity;
     }
@@ -120,6 +126,16 @@ vec4 triangle(vec2 pos, float t){
 
 vec4 triangles(vec2 pos, float t){
     vec4 col = vec4(0.0);
+
+    float scale = 0.7;
+    // Scale text
+    pos.x -= 0.5;
+    pos.y -= 0.5;
+    pos *= 1.0/scale;
+    pos.x += 0.5;
+    pos.y += 0.5;
+
+    pos.y -= 0.3;
     
     col += triangle(pos, t);
     pos.x *= (1.0 + 0.01 * cos(PI2 * time));
@@ -138,7 +154,7 @@ void main(void){
     vec4 col = vec4(0.0);
     
     col += stars(vec2(x,y), time);
-    col += grid_with_angle(vec2(x,y), time);
+    col += 0.9 * grid_with_angle(vec2(x,y), time);
     col += triangles(vec2(x,y),time);
 
     col += texture2D(text_tex, vec2(x, y));
