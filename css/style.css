@@ -65,15 +65,14 @@ button{
 }
 
 label{
-    font-weight:600;
+    font-weight:400;
     line-height:28px;
-} 
+}
 
 fieldset{
     margin:auto;
     margin-bottom:20px;
-    width:100%;
-    width:calc(100% - 60px);
+    width:500px;
     border-radius:2px;
     border:none;
     background:#efefef;
