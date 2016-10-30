@@ -61,7 +61,7 @@ vec4 grid_with_angle(vec2 pos, float t){
     if(pos.y < line_y){
         pos.x -= 0.5;
         pos.x *= pos.y + 0.5;
-        pos.y += t/16.0;
+        pos.y += 0.08 * t;
         
         col += grid(pos) * intensity;
     }
