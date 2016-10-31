@@ -13,11 +13,10 @@
 var anim_len = 10;
 var anim_delay = 100;
 var frame = 0;
+var anim_started = false;
 
 var text_canvas = qsa(".text-canvas")[0];
 var text_ctx = text_canvas.getContext("2d");
-
-var filename = "shaders/fragment.glsl";
 
 var ratio = 1;
 
@@ -85,6 +84,8 @@ var vertex_code = load_script("vertex-shader");
 var fragment_code = "";
 
 init_updater(qsa(".settings input"));
+init_style_updater();
+update_style();
 
 var data = {
     text_top : "",
@@ -95,20 +96,20 @@ var data = {
     text_bottom_size : 0
 };
 
-window.addEventListener("load", update_text);
-update_text();
+window.addEventListener("load", update_settings);
+update_settings();
 
 function init_updater(inputs){
     // Add some event listeners
     for(var i = 0; i < inputs.length; i++){
         input = inputs[i];
-        input.addEventListener("change",update_text);
-        input.addEventListener("keydown",update_text);
-        input.addEventListener("keyup",update_text);
+        input.addEventListener("change",update_settings);
+        input.addEventListener("keydown",update_settings);
+        input.addEventListener("keyup",update_settings);
     }
 }
 
-function update_text(){
+function update_settings(){
     // Fetch values in inputs
     data.text_top = qsa("input[name=top-text]")[0].value;
     data.text_top_size = qsa("input[name=top-text-size]")[0].value;
@@ -118,6 +119,26 @@ function update_text(){
     data.text_bottom_size = qsa("input[name=bottom-text-size]")[0].value;
     render_text();
 }
+
+function init_style_updater(){
+    var select = qsa("select[name='style']")[0];
+
+    select.addEventListener("change",update_style);
+}
+
+function update_style(){
+    var select = qsa("select[name='style']")[0];
+
+    switch(select.value){
+    case "2001":
+        load_shader("shaders/2001.glsl");
+        break;
+    default:
+        load_shader("shaders/80.glsl");
+        break;
+    }
+}
+
 
 function render_text(){
     var ctx = text_ctx;
@@ -164,20 +185,23 @@ function render_text(){
 }
 
 // Fetch file and put it in textarea
-if(filename != ""){
-    try{
-        var xhr = new XMLHttpRequest;
-        xhr.open('GET', "./" + filename, true);
-        xhr.onreadystatechange = function(){
-            if (4 == xhr.readyState) {
-                var val = xhr.responseText;
-                fragment_code = val;
-                update_shader();
-            }
-        };
-        xhr.send();
-    } catch (e){
-        // Do nothing
+function load_shader(filename){
+    if(filename != ""){
+        try{
+            var xhr = new XMLHttpRequest;
+            xhr.open('GET', "./" + filename, true);
+            xhr.onreadystatechange = function(){
+                if (4 == xhr.readyState) {
+                    var val = xhr.responseText;
+                    fragment_code = val;
+                    update_shader();
+                    start_anim();
+                }
+            };
+            xhr.send();
+        } catch (e){
+            // Do nothing
+        }
     }
 }
 
@@ -274,21 +298,28 @@ function draw_ctx(can, ctx, time){
 
 var rendering_gif = false;
 
-setInterval(
-    function(){
-        frame++;
-        frame = frame % (anim_len);
-        
-        window.requestAnimationFrame(function(){
-            // When rendering gif, draw is done elsewhere
-            if(!rendering_gif){
-                draw_ctx(gif_canvas, gif_ctx, (frame + 1)/(anim_len));
-            }
-        });
+function start_anim(){
+    if(anim_started){
+        return;
     }
-    , anim_delay
-);
 
+    anim_started = true;
+    
+    setInterval(
+        function(){
+            frame++;
+            frame = frame % (anim_len);
+            
+            window.requestAnimationFrame(function(){
+                // When rendering gif, draw is done elsewhere
+                if(!rendering_gif){
+                    draw_ctx(gif_canvas, gif_ctx, (frame + 1)/(anim_len));
+                }
+            });
+        }
+        , anim_delay
+    );
+}
 var gif_button = qsa("button[name='make-gif']")[0];
 
 gif_button.addEventListener("click", make_gif);
