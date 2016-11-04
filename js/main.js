@@ -202,6 +202,9 @@ function update_style(){
 setInterval(render_text, 500);
 
 function render_text(){
+    // Reset transform
+    text_ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     if(style == "youtried"){
         render_youtried();
     } else {
@@ -261,6 +264,8 @@ function render_default(){
 function render_youtried(){
     var ctx = text_ctx;
 
+    ctx.clearRect(0,0,size,size);
+    
     // Load this font
     utils.load_gfont("The Girl Next Door");
     
@@ -447,6 +452,7 @@ function start_anim(){
         , anim_delay
     );
 }
+
 var gif_button = qsa("button[name='make-gif']")[0];
 
 gif_button.addEventListener("click", make_gif);
@@ -454,7 +460,7 @@ gif_button.addEventListener("click", make_gif);
 // Render all the frames
 function make_gif(){
     var to_export = {};
-    
+
     to_export.delay = anim_delay;
     to_export.data = [];
     
@@ -465,10 +471,10 @@ function make_gif(){
         
         to_export.data.push(gif_canvas.toDataURL());
     }
-
-    rendering_gif = false;
     
     export_gif(to_export);
+    
+    rendering_gif = false;
 }
 
 // Make the gif from the frames
@@ -479,7 +485,7 @@ function export_gif(to_export){
         workerScript: "gif-export/lib/gifjs/gif.worker.js"
     });
     
-    data = to_export.data;
+    var data = to_export.data;
     
     var images = [];
     
@@ -513,7 +519,7 @@ function export_gif(to_export){
             img.src = URL.createObjectURL(blob);
 
             // Add it to the body
-            images_div.insertBefore(img, images_div.firstChild)
+            images_div.insertBefore(img, images_div.firstChild);
         })
     }
 }
