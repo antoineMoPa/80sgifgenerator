@@ -10,12 +10,45 @@
   
   */
 
+var utils = {};
+
+// Tool to load google webfonts with title
+utils.loaded_gfonts = {};
+utils.load_gfont = function(name_in){
+    // Was font already loaded
+    if(typeof utils.loaded_gfonts[name_in] != "undefined"){
+	return;
+    }
+
+    utils.loaded_gfonts[name_in] = "loading";
+    
+    // Format name
+    var name = name_in.replace(" ","+");
+    var url = "https://fonts.googleapis.com/css?family="+name;
+    var l = document.createElement("link");
+
+    // Add attributes
+    l.setAttribute("rel", "stylesheet");
+    l.setAttribute("href", url);
+
+    // Add element to page
+    document.head.appendChild(l);
+    
+    // Set as loaded
+    utils.loaded_gfonts[name_in] = "loaded";
+}
+
+// Animation parameters
 var anim_len = 10;
 var anim_delay = 100;
 var frame = 0;
 var anim_started = false;
 
+// Will contain the current style from the selector
 var style = "";
+
+// Canvas for rendering text & other stuff
+// (used in a glsl texture)
 var text_canvas = qsa(".text-canvas")[0];
 var text_ctx = text_canvas.getContext("2d");
 
@@ -25,14 +58,16 @@ var size = 512;
 
 // Canvas for making gifs
 var gif_canvas = qsa(".gif-canvas")[0];
+
+// Preview canvas
 gif_canvas.width = size;
 gif_canvas.height = size;
-
 text_canvas.width = size;
 text_canvas.height = size;
 
 var gif_ctx = gif_canvas.getContext("webgl");
 
+// Errror displayx
 var fragment_error_pre = qsa(".fragment-error-pre")[0];
 var vertex_error_pre = qsa(".vertex-error-pre")[0];
 
@@ -41,7 +76,7 @@ var text_tex;
 
 init_ctx(gif_ctx);
 init_text_texture(text_canvas, gif_ctx);
-                                        
+
 function init_text_texture(text_canvas, gif_ctx){
     var gl = gif_ctx;
     
@@ -131,28 +166,56 @@ function update_style(){
     var select = qsa("select[name='style']")[0];
     style = select.value;
 
+    // Reset style
+    {
+	var grayed_els = qsa(".grayed_out");
+	for(var i = 0; i < grayed_els.length; i++){
+	    grayed_els[i].classList.remove("grayed_out");
+	}
+    }
+
     switch(style){
     case "2001":
         load_shader("shaders/2001.glsl");
         break;
     case "youtried":
         load_shader("shaders/youtried.glsl");
+	
+	// "hide" top and bottom text
+	qsa(".top-text")[0].classList.add("grayed_out");
+	qsa(".bottom-text")[0].classList.add("grayed_out");
         break;
     default:
         load_shader("shaders/80.glsl");
         break;
     }
+    
     render_text();
 }
 
 
+// Render periodically
+// in case some font is loaded
+// TODO: watch for fonts to be loaded
+// (Don't do if it requires a huge library
+//  or a ugly hack)
+setInterval(render_text, 500);
+
 function render_text(){
     if(style == "youtried"){
         render_youtried();
-        return;
+    } else {
+	render_default();
     }
+}
 
+function render_default(){
     var ctx = text_ctx;
+    
+    // Load some fonts
+    utils.load_gfont("Kaushan Script");
+    utils.load_gfont("Monoton");
+    utils.load_gfont("Contrail One");
     
     ctx.clearRect(0,0,size,size);
     
@@ -197,22 +260,26 @@ function render_text(){
 
 function render_youtried(){
     var ctx = text_ctx;
-    
-    ctx.clearRect(0,0,size,size);
 
+    // Load this font
+    utils.load_gfont("The Girl Next Door");
+    
+    // Fill screen with white
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0,0,size,size);
     
     ctx.save();
-    
-    ctx.fillStyle = "#ffff00";
+
+    // Star color
+    ctx.fillStyle = "#ffdd22";
     ctx.strokeStyle = "#ffffff";
 
     ctx.translate(size/2,size/2);
     ctx.scale(1,-1);
     ctx.translate(-size/2,-size/2);
     ctx.scale(size/10,size/10);
-    
+
+    // Draw a star
     ctx.beginPath();
     ctx.moveTo(2,6);
     ctx.lineTo(5,6);
@@ -238,7 +305,7 @@ function render_youtried(){
     ctx.font = tsize +
         "px The Girl Next Door";
     
-    ctx.fillText(data.text_middle,250,size*1/2 + tsize/2.0);
+    ctx.fillText(data.text_middle,size/2,size*1/2 + tsize/2.0);
 
     // Put it in the opengl texture
     load_text_texture(text_canvas, gif_ctx);

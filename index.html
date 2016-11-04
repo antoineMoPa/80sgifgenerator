@@ -5,9 +5,6 @@
     <title>80's gif generator</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Contrail+One|Kaushan+Script|Monoton" rel="stylesheet">
-    <!-- You tried mode -->
-    <link href="https://fonts.googleapis.com/css?family=The+Girl+Next+Door" rel="stylesheet">
   </head>
   <body>
     <div class="page-content">
@@ -28,13 +25,13 @@
         <fieldset>
           <label>Style</label><br>
           <select name="style">
-            <option value="youtried">You tried</option>
             <option value="80">80's</option>
             <option value="2001">2001</option>
+	    <option value="youtried">You tried</option>
           </select>
         </fieldset>
         
-        <fieldset>
+        <fieldset class="top-text">
           <label>Top text</label><br>
           <input type="text" name="top-text" value="Are you feeling">
           <br>
@@ -42,7 +39,7 @@
           <input type="number" name="top-text-size" value="39">
         </fieldset>
 
-        <fieldset>
+        <fieldset class="middle-text">
           <label>Middle text</label><br>
           <input type="text" name="middle-text" value="Animated">
           <br>
@@ -50,7 +47,7 @@
           <input type="number" name="middle-text-size" value="70">
         </fieldset>
         
-        <fieldset>
+        <fieldset class="bottom-text">
           <label>Bottom text</label><br>
           <input type="text" name="bottom-text" value="yet?">
           <br>

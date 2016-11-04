@@ -78,6 +78,13 @@ fieldset{
     background:#efefef;
 }
 
+input{
+    background:#fff;
+    border:2px solid #888;
+    padding:4px;
+    border-radius:3px;
+}
+
 .settings input[type=text]{
     font-size:20px;
 }
@@ -90,4 +97,10 @@ footer{
 
 .text-bold{
     font-weight:700;
+}
+
+.grayed_out{
+    background: #ddd;
+    color: #555;
+    opacity:0.2;
 }
