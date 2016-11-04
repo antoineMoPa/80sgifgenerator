@@ -15,6 +15,7 @@ var anim_delay = 100;
 var frame = 0;
 var anim_started = false;
 
+var style = "";
 var text_canvas = qsa(".text-canvas")[0];
 var text_ctx = text_canvas.getContext("2d");
 
@@ -83,10 +84,6 @@ function init_ctx(ctx){
 var vertex_code = load_script("vertex-shader");
 var fragment_code = "";
 
-init_updater(qsa(".settings input"));
-init_style_updater();
-update_style();
-
 var data = {
     text_top : "",
     text_top_size : 0,
@@ -95,6 +92,10 @@ var data = {
     text_bottom : "",
     text_bottom_size : 0
 };
+
+init_updater(qsa(".settings input"));
+init_style_updater();
+update_style();
 
 window.addEventListener("load", update_settings);
 update_settings();
@@ -128,21 +129,31 @@ function init_style_updater(){
 
 function update_style(){
     var select = qsa("select[name='style']")[0];
+    style = select.value;
 
-    switch(select.value){
+    switch(style){
     case "2001":
         load_shader("shaders/2001.glsl");
+        break;
+    case "youtried":
+        load_shader("shaders/youtried.glsl");
         break;
     default:
         load_shader("shaders/80.glsl");
         break;
     }
+    render_text();
 }
 
 
 function render_text(){
-    var ctx = text_ctx;
+    if(style == "youtried"){
+        render_youtried();
+        return;
+    }
 
+    var ctx = text_ctx;
+    
     ctx.clearRect(0,0,size,size);
     
     ctx.textAlign = "center";
@@ -179,6 +190,55 @@ function render_text(){
         "px Contrail One";
 
     ctx.fillText(data.text_bottom,250,size*1/2 + tsize/2);
+
+    // Put it in the opengl texture
+    load_text_texture(text_canvas, gif_ctx);
+}
+
+function render_youtried(){
+    var ctx = text_ctx;
+    
+    ctx.clearRect(0,0,size,size);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0,0,size,size);
+    
+    ctx.save();
+    
+    ctx.fillStyle = "#ffff00";
+    ctx.strokeStyle = "#ffffff";
+
+    ctx.translate(size/2,size/2);
+    ctx.scale(1,-1);
+    ctx.translate(-size/2,-size/2);
+    ctx.scale(size/10,size/10);
+    
+    ctx.beginPath();
+    ctx.moveTo(2,6);
+    ctx.lineTo(5,6);
+    ctx.lineTo(5.5,8);
+    ctx.lineTo(6,6);
+    ctx.lineTo(8,6);
+    ctx.lineTo(6.2,5);
+    ctx.lineTo(7.5,2.5);
+    ctx.lineTo(5.5,4);
+    ctx.lineTo(3,2.5);
+    ctx.lineTo(4.5,5);
+
+    ctx.fill();
+
+    ctx.restore();
+    
+    ctx.textAlign = "center";
+
+    // MIDDLE TEXT
+    ctx.fillStyle = "#000000";
+    var tsize = data.text_middle_size;
+
+    ctx.font = tsize +
+        "px The Girl Next Door";
+    
+    ctx.fillText(data.text_middle,250,size*1/2 + tsize/2.0);
 
     // Put it in the opengl texture
     load_text_texture(text_canvas, gif_ctx);
