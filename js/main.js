@@ -185,6 +185,9 @@ function update_style(){
 	qsa(".top-text")[0].classList.add("grayed_out");
 	qsa(".bottom-text")[0].classList.add("grayed_out");
         break;
+    case "80-vhs":
+	load_shader("shaders/80-vhs.glsl");
+	break;
     default:
         load_shader("shaders/80.glsl");
         break;
